@@ -368,3 +368,31 @@ output "ct_logs_cw_logs_kms_aliases" {
   description = "A map of aliases created and their attributes"
   value       = module.ct_logs_cw_logs_kms_key.aliases
 }
+
+###############################################################################
+#  IAM role for ECS Cluster
+###############################################################################
+
+output "ecs_cluster_iam_role_arn" {
+  description = "ARN of AWS ECS cluster IAM role"
+  value       = try(aws_iam_role.aws_ecs_cluster_iam_role.arn, "")
+}
+
+output "ecs_cluster_iam_role_name" {
+  description = "Name of AWS ECS cluster IAM role"
+  value       = try(aws_iam_role.aws_ecs_cluster_iam_role.name, "")
+}
+
+###############################################################################
+#  IAM role for admin
+###############################################################################
+
+output "admin_iam_role_arn" {
+  description = "ARN of admin IAM role"
+  value       = try(aws_iam_role.admin_iam_role.arn, "")
+}
+
+output "admin_iam_role_name" {
+  description = "Name of admin IAM role"
+  value       = try(aws_iam_role.admin_iam_role.name, "")
+}
