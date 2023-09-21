@@ -224,3 +224,166 @@ variable "ct_logging" {
   type        = map(string)
   default     = {}
 }
+
+###############################################################################
+# EKS Cluster
+###############################################################################
+
+variable "cluster_version" {
+  type    = string
+  default = "1.27"
+}
+
+variable "cluster_tags" {
+  description = "A map of additional tags to add to the cluster"
+  type        = map(string)
+  default     = {}
+}
+
+###############################################################################
+# KMS key for EKS cluster encryption
+###############################################################################
+
+variable "kms_key_owners" {
+  description = "A list of IAM ARNs for those who will have full key permissions (`kms:*`)"
+  type        = list(string)
+  default     = []
+}
+
+variable "kms_key_administrators" {
+  description = "A list of IAM ARNs for [key administrators](https://docs.aws.amazon.com/kms/latest/developerguide/key-policy-default.html#key-policy-default-allow-administrators). If no value is provided, the current caller identity is used to ensure at least one key admin is available"
+  type        = list(string)
+  default     = []
+}
+
+variable "kms_key_users" {
+  description = "A list of IAM ARNs for [key users](https://docs.aws.amazon.com/kms/latest/developerguide/key-policy-default.html#key-policy-default-allow-users)"
+  type        = list(string)
+  default     = []
+}
+
+variable "kms_key_service_users" {
+  description = "A list of IAM ARNs for [key service users](https://docs.aws.amazon.com/kms/latest/developerguide/key-policy-default.html#key-policy-service-integration)"
+  type        = list(string)
+  default     = []
+}
+
+variable "kms_key_source_policy_documents" {
+  description = "List of IAM policy documents that are merged together into the exported document. Statements must have unique `sid`s"
+  type        = list(string)
+  default     = []
+}
+
+###############################################################################
+# EKS Cluster CloudWatch Log Group
+###############################################################################
+
+variable "cloudwatch_log_group_kms_key_id" {
+  description = "If a KMS Key ARN is set, this key will be used to encrypt the corresponding log group. Please be sure that the KMS Key has an appropriate key policy (https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/encrypt-log-data-kms.html)"
+  type        = string
+  default     = null
+}
+
+###############################################################################
+# EKS Cluster Security Group
+###############################################################################
+
+variable "vpc_id" {
+  description = "ID of the VPC where the cluster security group will be provisioned"
+  type        = string
+  default     = null
+}
+
+variable "cluster_security_group_name" {
+  description = "Name to use on cluster security group created"
+  type        = string
+  default     = null
+}
+
+variable "cluster_security_group_additional_rules" {
+  description = "List of additional security group rules to add to the cluster security group created. Set `source_node_security_group = true` inside rules to set the `node_security_group` as source"
+  type        = any
+  default     = {}
+}
+
+variable "cluster_security_group_tags" {
+  description = "A map of additional tags to add to the cluster security group created"
+  type        = map(string)
+  default     = {}
+}
+
+###############################################################################
+# EKS Cluster Node Security Group
+###############################################################################
+
+variable "node_security_group_name" {
+  description = "Name to use on node security group created"
+  type        = string
+  default     = null
+}
+
+variable "node_security_group_additional_rules" {
+  description = "List of additional security group rules to add to the node security group created. Set `source_cluster_security_group = true` inside rules to set the `cluster_security_group` as source"
+  type        = any
+  default     = {}
+}
+
+variable "node_security_group_tags" {
+  description = "A map of additional tags to add to the node security group created"
+  type        = map(string)
+  default     = {}
+}
+
+###############################################################################
+# EKS Cluster IAM Role
+###############################################################################
+
+variable "iam_role_name" {
+  description = "Name to use on IAM role created"
+  type        = string
+  default     = null
+}
+
+variable "iam_role_permissions_boundary" {
+  description = "ARN of the policy that is used to set the permissions boundary for the IAM role"
+  type        = string
+  default     = null
+}
+
+variable "iam_role_tags" {
+  description = "A map of additional tags to add to the IAM role created"
+  type        = map(string)
+  default     = {}
+}
+
+variable "cluster_encryption_policy_name" {
+  description = "Name to use on cluster encryption policy created"
+  type        = string
+  default     = null
+}
+
+variable "cluster_encryption_policy_tags" {
+  description = "A map of additional tags to add to the cluster encryption policy created"
+  type        = map(string)
+  default     = {}
+}
+
+###############################################################################
+# EKS Addons
+###############################################################################
+
+variable "cluster_addons" {
+  description = "Map of cluster addon configurations to enable for the cluster. Addon name can be the map keys or set with `name`"
+  type        = any
+  default     = {}
+}
+
+###############################################################################
+# EKS Managed Node Group
+###############################################################################
+
+variable "eks_managed_node_groups" {
+  description = "Map of EKS managed node group definitions to create"
+  type        = any
+  default     = {}
+}

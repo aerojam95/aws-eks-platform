@@ -47,7 +47,7 @@ module "vpc_flow_log_kms_key" {
     { "Name" = "${var.name}-cw-vpc-flow-logs-kms-key" },
     local.resource_tags
   )
-  
+
 }
 
 ###############################################################################
@@ -145,6 +145,56 @@ module "ct_logs_cw_logs_kms_key" {
 
   tags = merge(
     { "Name" = "${local.name}-ct-logs-cw-logs-kms-key" },
+    local.resource_tags
+  )
+
+}
+
+###############################################################################
+# EKS cluster logs KMS key
+###############################################################################
+
+module "eks_cluster_logs_kms_key" {
+  source      = "terraform-aws-modules/kms/aws"
+  version     = "~> 1.5.0"
+  description = "${local.name} AWS CloudWatch EKS cluster logs Encryption KMS Key"
+  key_owners  = ["${data.aws_caller_identity.current.arn}"]
+
+  key_statements = [
+    {
+      sid = "CWECSClusterLogs"
+      actions = [
+        "kms:Encrypt*",
+        "kms:Decrypt*",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:Describe*"
+      ]
+      resources = ["*"]
+
+      principals = [
+        {
+          type        = "Service"
+          identifiers = ["logs.${local.region}.amazonaws.com"]
+        }
+      ]
+
+      conditions = [
+        {
+          test     = "ArnLike"
+          variable = "kms:EncryptionContext:aws:logs:arn"
+          values = [
+            "arn:aws:logs:${local.region}:${data.aws_caller_identity.current.account_id}:log-group:*",
+          ]
+        }
+      ]
+    }
+  ]
+
+  aliases = ["${local.name}-cw-eks-cluster-logs-kms-key"]
+
+  tags = merge(
+    { "Name" = "${local.name}-cw-eks-cluster-logs-kms-key" },
     local.resource_tags
   )
 

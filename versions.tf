@@ -15,7 +15,7 @@ terraform {
   # S3 bucket beiong used as a  remote backend for AWS deployment
   backend "s3" {
     bucket  = ""
-    region  = ""
+    region  = "eu-west-2"
     key     = ""
     encrypt = true
   }

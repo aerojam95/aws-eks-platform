@@ -211,7 +211,7 @@ output "vpc_flow_log_key_policy" {
 
 output "vpc_flow_log_key_aliases" {
   description = "A map of aliases created and their attributes"
-  value       = module.kms_key.aliases
+  value       = try(module.vpc_flow_log_kms_key.aliases, null)
 }
 
 ###############################################################################
@@ -369,18 +369,185 @@ output "ct_logs_cw_logs_kms_aliases" {
   value       = module.ct_logs_cw_logs_kms_key.aliases
 }
 
-###############################################################################
-#  IAM role for ECS Cluster
-###############################################################################
+################################################################################
+# EKS Cluster
+################################################################################
 
-output "ecs_cluster_iam_role_arn" {
-  description = "ARN of AWS ECS cluster IAM role"
-  value       = try(aws_iam_role.aws_ecs_cluster_iam_role.arn, "")
+output "cluster_arn" {
+  description = "The Amazon Resource Name (ARN) of the cluster"
+  value       = try(module.eks.cluster_arn, null)
 }
 
-output "ecs_cluster_iam_role_name" {
-  description = "Name of AWS ECS cluster IAM role"
-  value       = try(aws_iam_role.aws_ecs_cluster_iam_role.name, "")
+output "cluster_certificate_authority_data" {
+  description = "Base64 encoded certificate data required to communicate with the cluster"
+  value       = try(module.eks.cluster_certificate_authority_data, null)
+}
+
+output "cluster_endpoint" {
+  description = "Endpoint for your Kubernetes API server"
+  value       = try(module.eks.cluster_endpoint, null)
+}
+
+output "cluster_id" {
+  description = "The ID of the EKS cluster. Note: currently a value is returned only for local EKS clusters created on Outposts"
+  value       = try(module.eks.cluster_id, "")
+}
+
+output "cluster_name" {
+  description = "The name of the EKS cluster"
+  value       = try(module.eks.cluster_name, "")
+}
+
+output "cluster_version" {
+  description = "The Kubernetes version for the cluster"
+  value       = try(module.eks.cluster_version, null)
+}
+
+output "cluster_platform_version" {
+  description = "Platform version for the cluster"
+  value       = try(module.eks.cluster_platform_version, null)
+}
+
+output "cluster_status" {
+  description = "Status of the EKS cluster. One of `CREATING`, `ACTIVE`, `DELETING`, `FAILED`"
+  value       = try(module.eks.cluster_status, null)
+}
+
+output "cluster_primary_security_group_id" {
+  description = "Cluster security group that was created by Amazon EKS for the cluster. Managed node groups use this security group for control-plane-to-data-plane communication. Referred to as 'Cluster security group' in the EKS console"
+  value       = try(module.eks.cluster_primary_security_group_id, null)
+}
+
+################################################################################
+# KMS Key
+################################################################################
+
+output "kms_key_arn" {
+  description = "The Amazon Resource Name (ARN) of the key"
+  value       = module.eks.kms_key_arn
+}
+
+output "kms_key_id" {
+  description = "The globally unique identifier for the key"
+  value       = module.eks.kms_key_id
+}
+
+output "kms_key_policy" {
+  description = "The IAM resource policy set on the key"
+  value       = module.eks.kms_key_policy
+}
+
+################################################################################
+# Cluster Security Group
+################################################################################
+
+output "cluster_security_group_arn" {
+  description = "Amazon Resource Name (ARN) of the cluster security group"
+  value       = try(module.eks.cluster_security_group_arn, null)
+}
+
+output "cluster_security_group_id" {
+  description = "ID of the cluster security group"
+  value       = try(module.eks.cluster_security_group_id, null)
+}
+
+################################################################################
+# Node Security Group
+################################################################################
+
+output "node_security_group_arn" {
+  description = "Amazon Resource Name (ARN) of the node shared security group"
+  value       = try(module.eks.node_security_group_arn, null)
+}
+
+output "node_security_group_id" {
+  description = "ID of the node shared security group"
+  value       = try(module.eks.node_security_group_id, null)
+}
+
+################################################################################
+# IAM Role
+################################################################################
+
+output "cluster_iam_role_name" {
+  description = "IAM role name of the EKS cluster"
+  value       = try(module.eks.cluster_iam_role_name, null)
+}
+
+output "cluster_iam_role_arn" {
+  description = "IAM role ARN of the EKS cluster"
+  value       = try(module.eks.cluster_iam_role_arn, null)
+}
+
+output "cluster_iam_role_unique_id" {
+  description = "Stable and unique string identifying the IAM role"
+  value       = try(module.eks.cluster_iam_role_unqiue_id, null)
+}
+
+################################################################################
+# EKS Addons
+################################################################################
+
+output "cluster_addons" {
+  description = "Map of attribute maps for all EKS cluster addons enabled"
+  value       = try(module.eks.cluster_addons, null)
+}
+
+
+################################################################################
+# CloudWatch Log Group
+################################################################################
+
+output "cloudwatch_log_group_name" {
+  description = "Name of cloudwatch log group created"
+  value       = try(module.eks.cloudwatch_log_group_name, null)
+}
+
+output "cloudwatch_log_group_arn" {
+  description = "Arn of cloudwatch log group created"
+  value       = try(module.eks.cloudwatch_log_group_arn, null)
+}
+
+################################################################################
+# EKS Managed Node Group
+################################################################################
+
+output "eks_managed_node_groups" {
+  description = "Map of attribute maps for all EKS managed node groups created"
+  value       = module.eks.eks_managed_node_groups
+}
+
+################################################################################
+# EKS Cluster additional
+################################################################################
+
+output "configure_kubectl" {
+  description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
+  value       = "aws eks --region ${local.region} update-kubeconfig --name ${module.eks.cluster_name}"
+}
+
+
+###############################################################################
+# EKS Cluster logs KMS key
+###############################################################################
+
+output "eks_cluster_logs_kms_key_arn" {
+  description = "The Amazon Resource Name (ARN) of the key"
+  value       = try(module.eks_cluster_logs_kms_key.key_arn, null)
+}
+
+output "eks_cluster_logs_kms_key_id" {
+  description = "The globally unique identifier for the key"
+  value       = try(module.eks_cluster_logs_kms_key.key_id, null)
+}
+
+###############################################################################
+# Alias for KMS key for CloudWatch log groups for EKS Cluster logs
+###############################################################################
+
+output "eks_cluster_logs_kms_aliases" {
+  description = "A map of aliases created and their attributes"
+  value       = module.eks_cluster_logs_kms_key.aliases
 }
 
 ###############################################################################
