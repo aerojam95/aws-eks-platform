@@ -98,7 +98,7 @@ variable "private_outbound_acl_rules" {
 }
 
 ###############################################################################
-# KMS key
+# KMS key for CloudWatch log groups for VPC flow logs
 ###############################################################################
 
 variable "key_statements" {
@@ -158,15 +158,69 @@ variable "endpoints" {
 }
 
 ###############################################################################
-# AWS cloud map
+# CloudTrail
 ###############################################################################
 
+variable "is_multi_region_trail" {
+  type        = bool
+  default     = true
+  description = "Specifies whether the trail is created in the current region or in all regions"
+}
+
+variable "include_global_service_events" {
+  type        = bool
+  default     = false
+  description = "Specifies whether the trail is publishing events from global services such as IAM to the log files"
+}
+
+variable "insight_selector" {
+  type = list(object({
+    insight_type = string
+  }))
+
+  description = "Specifies an insight selector for type of insights to log on a trail"
+  default     = []
+}
+
+variable "event_selector" {
+  type = list(object({
+    include_management_events = bool
+    read_write_type           = string
+
+    data_resource = list(object({
+      type   = string
+      values = list(string)
+    }))
+  }))
+
+  description = "Specifies an event selector for enabling data event logging. See: https://www.terraform.io/docs/providers/aws/r/cloudtrail.html for details on this variable"
+  default     = []
+}
+
 ###############################################################################
-# Namespace
+# CT S3 logging Bucket
 ###############################################################################
 
-variable "namespace_name" {
-  description = "Name of AWS cloud map namespace"
+variable "ct_bucket" {
+  description = "(Optional, Forces new resource) The name of the bucket. If omitted, Terraform will assign a random, unique name."
   type        = string
-  default     = ""
+  default     = null
+}
+
+variable "ct_bucket_prefix" {
+  description = "(Optional, Forces new resource) Creates a unique bucket name beginning with the specified prefix. Conflicts with bucket."
+  type        = string
+  default     = null
+}
+
+variable "ct_tags" {
+  description = "(Optional) A mapping of tags to assign to the bucket."
+  type        = map(string)
+  default     = {}
+}
+
+variable "ct_logging" {
+  description = "Map containing access bucket logging configuration."
+  type        = map(string)
+  default     = {}
 }

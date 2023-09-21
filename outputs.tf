@@ -252,48 +252,119 @@ output "endpoints" {
 }
 
 ###############################################################################
-#  AWS Cloud Map
+# CloudTrail
 ###############################################################################
 
-###############################################################################
-#  Namespace
-###############################################################################
-
-output "namespace_id" {
-  description = "The ID of the cloud map namespace"
-  value       = try(module.namespace.namespace_id, null)
+output "cloudtrail_id" {
+  description = "The name of the trail"
+  value       = try(module.cloudtrail.cloudtrail_id, null)
 }
 
-output "namespace_arn" {
-  description = "The ARN of the cloud map namespace"
-  value       = try(module.namespace.namespace_arn, null)
+output "cloudtrail_home_region" {
+  description = "The region in which the trail was created"
+  value       = try(module.cloudtrail.cloudtrail_home_region, null)
 }
 
-output "namespace_hosted_zone" {
-  description = "The ID for the hosted zone that AWS Route 53 creates when you create a namespace"
-  value       = try(module.namespace.namespace_hosted_zone, null)
+output "cloudtrail_arn" {
+  description = "The Amazon Resource Name of the trail"
+  value       = try(module.cloudtrail.cloudtrail_arn, null)
 }
 
-output "namespace_tags" {
-  description = "The tags of the cloud map namespace resource tags"
-  value       = try(module.namespace.namespace_tags, null)
-}
-
-output "aws_cloud_map_iam_role_arn" {
-  description = "The ARN of the IAM role used when pushing logs to Cloudwatch log group"
-  value       = try(module.namespace.aws_cloud_map_iam_role_arn, null)
+output "cloudtrail_bucket_domain_name" {
+  description = "FQDN of the CloudTral S3 bucket"
+  value       = try(module.cloudtrail.bucket_domain_name, null)
 }
 
 ###############################################################################
-#  IAM role for AWS Cloud Map Namespace
+#  IAM role for CT
 ###############################################################################
 
-output "admin_iam_role_arn" {
-  description = "ARN of admin IAM role"
-  value       = try(aws_iam_role.aws_cloud_map_iam_role.arn, "")
+output "aws_ct_iam_role_iam_role_arn" {
+  description = "ARN of AWS CloudTrail IAM role"
+  value       = try(aws_iam_role.aws_ct_iam_role.arn, "")
 }
 
-output "admin_iam_role_name" {
-  description = "Name of admin IAM role"
-  value       = try(aws_iam_role.aws_cloud_map_iam_role.name, "")
+output "aws_ct_iam_role_iam_role_name" {
+  description = "Name of AWS CloudTrail IAM role"
+  value       = try(aws_iam_role.aws_ct_iam_role.name, "")
+}
+
+###############################################################################
+# CT S3 logging Bucket
+###############################################################################
+
+output "ct_s3_bucket_id" {
+  description = "The name of the bucket."
+  value       = try(module.s3_bucket_ct_logs.s3_bucket_id, "")
+}
+
+output "ct_s3_bucket_arn" {
+  description = "The ARN of the bucket. Will be of format arn:aws:s3:::bucketname."
+  value       = try(module.s3_bucket_ct_logs.s3_bucket_arn, "")
+}
+
+output "ct_s3_bucket_lifecycle_configuration_rules" {
+  description = "The lifecycle rules of the bucket, if the bucket is configured with lifecycle rules. If not, this will be an empty string."
+  value       = try(module.s3_bucket_ct_logs.s3_bucket_lifecycle_configuration_rules, "")
+}
+
+output "ct_s3_bucket_policy" {
+  description = "The policy of the bucket, if the bucket is configured with a policy. If not, this will be an empty string."
+  value       = try(module.s3_bucket_ct_logs.s3_bucket_policy, "")
+}
+
+###############################################################################
+# CT S3 logs KMS key
+###############################################################################
+
+output "ct_logs_s3_bucket_kms_key_arn" {
+  description = "The Amazon Resource Name (ARN) of the key"
+  value       = try(module.ct_logs_s3_bucket_kms_key.key_arn, null)
+}
+
+output "ct_logs_s3_bucket_kms_key_id" {
+  description = "The globally unique identifier for the key"
+  value       = try(module.ct_logs_s3_bucket_kms_key.key_id, null)
+}
+
+output "ct_logs_s3_bucket_kms_key_policy" {
+  description = "The IAM resource policy set on the key"
+  value       = try(module.ct_logs_s3_bucket_kms_key.key_policy, null)
+}
+
+###############################################################################
+# Alias for KMS key for CloudWatch log groups for CT S3 logs
+###############################################################################
+
+output "ct_logs_s3_bucket_kms_aliases" {
+  description = "A map of aliases created and their attributes"
+  value       = module.ct_logs_s3_bucket_kms_key.aliases
+}
+
+###############################################################################
+# CT CW logs KMS key
+###############################################################################
+
+output "ct_logs_cw_logs_kms_key_arn" {
+  description = "The Amazon Resource Name (ARN) of the key"
+  value       = try(module.ct_logs_cw_logs_kms_key.key_arn, null)
+}
+
+output "ct_logs_cw_logs_bucket_kms_key_id" {
+  description = "The globally unique identifier for the key"
+  value       = try(module.ct_logs_cw_logs_kms_key.key_id, null)
+}
+
+output "ct_logs_cw_logs_bucket_kms_key_policy" {
+  description = "The IAM resource policy set on the key"
+  value       = try(module.ct_logs_cw_logs_kms_key.key_policy, null)
+}
+
+###############################################################################
+# Alias for KMS key for CloudWatch log groups for CT CW logs
+###############################################################################
+
+output "ct_logs_cw_logs_kms_aliases" {
+  description = "A map of aliases created and their attributes"
+  value       = module.ct_logs_cw_logs_kms_key.aliases
 }
