@@ -1,4 +1,4 @@
-# Deployment of Kubernetes objects on the EKS cluster
+# Deployment of Traefik ingress controller Kubernetes objects on the EKS cluster
 
 ## Pre-requisites
 1. Get relevant AWS credentials (Access Key and Access Secret) to apply terraform locally or input credentials into the relevant Pipeline variables
