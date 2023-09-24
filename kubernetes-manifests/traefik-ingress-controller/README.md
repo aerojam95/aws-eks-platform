@@ -5,7 +5,7 @@
 2. Create S3 bucket and configure as Terraform remote backend to store the relevant Terraform statefile
 3. Add the state file related values to to the backend block in the version.tf file once created
 4. Create an image of a service to be pulled from AWS ECR to use to spin up containers in pods that will be deployed on the EKS cluster
-5. Deplpoy infrastructure in the above [repository](../../)
+5. Deploy infrastructure in the above [repository](../../)
 
 ## Accessing EKS cluster
 The EKS cluster is deployed in a private subnet, so can only be managed from 
