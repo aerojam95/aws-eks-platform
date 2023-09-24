@@ -84,23 +84,3 @@ module "eks" {
 
   eks_managed_node_groups = var.eks_managed_node_groups
 }
-
-# module "eks_blueprints_addons" {
-#   # tflint-ignore: terraform_module_pinned_source
-#   source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.32.1"
-#   #source = "https://registry.terraform.io/modules/aws-ia/eks-blueprints-addons/aws"
-#   #source = "https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons?ref=main" #
-#   #source = "aws-ia/eks-blueprints-addons/aws"
-#   #version = "1.3.0"
-
-#   eks_cluster_id        = module.eks.cluster_name
-#   eks_cluster_endpoint  = module.eks.cluster_endpoint
-#   eks_cluster_version   = module.eks.cluster_version
-#   eks_oidc_provider     = module.eks.oidc_provider
-#   eks_oidc_provider_arn = module.eks.oidc_provider_arn
-
-#   # Add-ons
-#   enable_aws_load_balancer_controller  = true
-
-#   tags = local.tags
-# }
