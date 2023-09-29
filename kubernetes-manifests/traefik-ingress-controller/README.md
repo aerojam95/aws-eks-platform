@@ -117,7 +117,7 @@ traefik-7fc5f7dfc7-rmxbv   1/1     Running   0          12m
 whoami-75d5976d8d-vmpfw    1/1     Running   0          23s
 ```
 
-10. Create an Ingress object to route the traffic to your newly deployed web application sercvice with ingres.yaml:
+10. Create an Ingress object to route the traffic to your newly deployed web application service with ingres.yaml:
 
 ```sh
 $ kubectl apply -f ingress.yaml
