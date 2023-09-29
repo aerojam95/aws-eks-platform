@@ -76,7 +76,7 @@ module "vpc" {
   #############################################################################
 
   enable_nat_gateway = true
-  single_nat_gateway = false
+  single_nat_gateway = true
   nat_gateway_tags   = { "Auxillary name" = format("${local.name}-ngw") }
   nat_eip_tags       = { "Auxillary name" = format("${local.name}-neip") }
 

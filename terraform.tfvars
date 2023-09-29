@@ -2,7 +2,7 @@
 # General variables
 ###############################################################################
 
-region  = "eu-west-1"
+region  = ""
 project = "container-platform"
 name    = "container-platform"
 

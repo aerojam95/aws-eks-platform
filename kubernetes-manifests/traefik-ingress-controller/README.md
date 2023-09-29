@@ -75,7 +75,7 @@ kube-system   kube-proxy-f6chz           1/1     Running   0          8m30s
 kube-system   kube-proxy-xcfkc           1/1     Running   0          8m31s
 ```
 
-5. We can now install thr traefik reverse proxy, for ease of deployment we shall use a Helm chart as we have standard deployment, but shall set a number of configutrations reatling to the infrastructure usings the values.yaml file that we have defined:
+5. We can now install the traefik reverse proxy, for ease of deployment we shall use a Helm chart as we have standard deployment, but shall set a number of configutrations reatling to the infrastructure usings the values.yaml file that we have defined:
 
 ```sh
 $ helm repo add traefik https://helm.traefik.io/traefik
@@ -86,7 +86,13 @@ NAME                       READY   STATUS    RESTARTS   AGE
 traefik-7fc5f7dfc7-rmxbv   1/1     Running   0          12m
 ```
 
-6. We can now expoise some services. We shall create an IngressRoute object for the Traefik dashboard which will have an auth middleware componet for accessing the endpoints. The following files shall be used  secret.yaml, middleware.yaml, and ingress-route.yaml:
+6. In order to use the Kubernetes API, Traefik needs some permissions. This permission mechanism is based on roles defined by the cluster administrator. The role is then bound to an account used by an application, in this case, Traefik Proxy. In order to achieve this we need to deploy a service account for Traefik that has a role binding to a role that allows it permissions to the Kubernetes API. Documentation for this step can be found [here](https://doc.traefik.io/traefik/getting-started/quick-start-with-kubernetes/). The following files shall be used- account.yaml, role-binding.yaml, and role.yaml:
+
+```sh
+$ kubectl create -f account.yaml -f role-binding.yaml -f role.yaml
+```
+
+7. We can now expose some services. We shall create an IngressRoute object for the Traefik dashboard which will have an auth middleware componet for accessing the endpoints. The following files shall be used-  secret.yaml, middleware.yaml, and ingress-route.yaml:
 
 ```sh
 $ kubectl create -f secret.yaml -f middleware.yaml -f ingress-route.yaml 
@@ -95,13 +101,13 @@ NAME      TYPE           CLUSTER-IP      EXTERNAL-IP                            
 traefik   LoadBalancer   10.100.194.78   <EXTERNAL-IP>                                                            80:31693/TCP,443:31136/TCP   72s
 ```
 
-7. Using the <EXTERNAL-IP> of the load balancer service deployed from the Helm chart and just modified you can view the Traefik dashboard:
+8. Using the <EXTERNAL-IP> of the load balancer service deployed from the Helm chart and just modified you can view the Traefik dashboard:
 
 ```sh
 http://<EXTERNAL-IP>/dashboard
 ```
 
-8. Exposing a service of a web application you want to deploy will be done with an Ingress Kubernetes object. Firstly deploy a web application and a service using whoami.yaml:
+9. Exposing a service of a web application you want to deploy will be done with an Ingress Kubernetes object. Firstly deploy a web application and a service using whoami.yaml:
 
 ```sh
 $ kubectl apply -f whoami.yaml
@@ -111,13 +117,13 @@ traefik-7fc5f7dfc7-rmxbv   1/1     Running   0          12m
 whoami-75d5976d8d-vmpfw    1/1     Running   0          23s
 ```
 
-9. Create an Ingress object to route the traffic to your newly deployed web application sercvice with ingres.yaml:
+10. Create an Ingress object to route the traffic to your newly deployed web application sercvice with ingres.yaml:
 
 ```sh
 $ kubectl apply -f ingress.yaml
 ```
 
-10. Test that you can access your web application using the traefik loadbalancer <EXTERNAL-IP> and ingress prefix:
+11. Test that you can access your web application using the traefik loadbalancer <EXTERNAL-IP> and ingress prefix:
 
 ```sh
 $ curl -v -u test:password <EXTERNAL-IP>/whoami
@@ -158,6 +164,6 @@ X-Real-Ip: 10.0.2.153
 * Connection #0 to host <EXTERNAL-IP> left intact
 ```
 
-11. The Traefik reverse proxy can now be used and the only change to be done is to the deployment, service, and ingress for your given web application you wish to deploy
+12. The Traefik reverse proxy can now be used and the only change to be done is to the deployment, service, and ingress for your given web application you wish to deploy
 
-12. This setup was followed and modified by following the the Traefik documentation [Using Traefik Proxy as the Ingress Controller](https://community.traefik.io/t/using-traefik-proxy-as-the-ingress-controller-traefik-labs/15464/1), the principal modification was the change of container image on the web application from traefik/whoami to containous/whoami as the proposed image was not working correctly, as can be seen on [here](https://stackoverflow.com/questions/62780325/traefik-v2-2-ingress-route-example-not-working), and the alternative one provides the expected results in this documentation
+13. This setup was followed and modified by following the the Traefik documentation [Using Traefik Proxy as the Ingress Controller](https://community.traefik.io/t/using-traefik-proxy-as-the-ingress-controller-traefik-labs/15464/1), the principal modification was the change of container image on the web application from traefik/whoami to containous/whoami as the proposed image was not working correctly, as can be seen on [here](https://stackoverflow.com/questions/62780325/traefik-v2-2-ingress-route-example-not-working), and the alternative one provides the expected results in this documentation

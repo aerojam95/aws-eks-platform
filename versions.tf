@@ -14,9 +14,9 @@ terraform {
   }
   # S3 bucket beiong used as a  remote backend for AWS deployment
   backend "s3" {
-    bucket  = "dvt-acloud-kubernetes-terraform"
-    region  = "eu-west-2"
-    key     = "cp/e2e-eks/terraform.tfstate"
+    bucket  = ""
+    region  = ""
+    key     = ""
     encrypt = true
   }
 }
