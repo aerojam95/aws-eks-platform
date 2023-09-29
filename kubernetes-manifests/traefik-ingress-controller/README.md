@@ -75,7 +75,7 @@ kube-system   kube-proxy-f6chz           1/1     Running   0          8m30s
 kube-system   kube-proxy-xcfkc           1/1     Running   0          8m31s
 ```
 
-5. We can now install the traefik reverse proxy, for ease of deployment we shall use a Helm chart as we have standard deployment, but shall set a number of configutrations reatling to the infrastructure usings the values.yaml file that we have defined:
+5. We can now install the traefik reverse proxy, for ease of deployment we shall use a Helm chart as we have standard deployment, but shall set a number of configurations relating to the infrastructure usings the values.yaml file that we have defined:
 
 ```sh
 $ helm repo add traefik https://helm.traefik.io/traefik
@@ -92,7 +92,7 @@ traefik-7fc5f7dfc7-rmxbv   1/1     Running   0          12m
 $ kubectl create -f account.yaml -f role-binding.yaml -f role.yaml
 ```
 
-7. We can now expose some services. We shall create an IngressRoute object for the Traefik dashboard which will have an auth middleware componet for accessing the endpoints. The following files shall be used-  secret.yaml, middleware.yaml, and ingress-route.yaml:
+7. We can now expose some services. We shall create an IngressRoute object for the Traefik dashboard which will have an auth middleware component for accessing the endpoints. The following files shall be used-  secret.yaml, middleware.yaml, and ingress-route.yaml:
 
 ```sh
 $ kubectl create -f secret.yaml -f middleware.yaml -f ingress-route.yaml 
